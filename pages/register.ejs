@@ -4,9 +4,10 @@
 <div class="jumbotron">
     <h2>Inscrivez-vous</h2>
     <form class="inscription" action="#" method="post" name="inscription">
-        <!-- c'est quoi les attributs action et method ? -->
-        <!-- qu'y a-t-il d'autre comme possiblité que post pour l'attribut method ? -->
         <div class="alert alert-info">Les champs obligatoires sont indiqués par *</div>
+        <% if(errors.length != 0){ %>
+        <div class="alert alert-danger"><%= errors %></div>
+        <% }%>
 
 <div class="row">
 

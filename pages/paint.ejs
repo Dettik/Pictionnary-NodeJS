@@ -6,7 +6,7 @@
         <canvas width="350" height="350" id="canvas" style="border: 1px solid grey;background-color: white"></canvas>
     </div>
 
-    <form class="form-horizontal" action="req_paint.php" method="post">
+    <form class="form-horizontal" action="paint" method="post">
         <div class="form-group">
             <label for="taille">Taille : <span id="size">8</span></label>
             <input type="range" name="taille" id="taille" min="8" max="80" value="8" step="6" oninput="document.getElementById('size').textContent=value"/>
@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="col-xs-12 text-center">
-            <button class="btn btn-danger" id="restart">Recommencer</button>
+            <a class="btn btn-danger" href="paint" id="restart">Recommencer</a>
             <button class="btn btn-primary" id="validate" disabled>Enregistrer</button>
             <input type="hidden" id="drawingCommands" name="drawingCommands"/>
             <input type="hidden" id="picture" name="picture"/>

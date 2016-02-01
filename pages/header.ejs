@@ -41,9 +41,12 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
+                <% if(!sess.email) {%>
                 <li><a href="login">Se connecter</a></li>
                 <li><a href="register">S'inscrire</a></li>
+                <% } else{%>
                 <li><a href="logout">Se déconnecter</a></li>
+                <% }%>
             </ul>
         </div>
     </div>

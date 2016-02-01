@@ -1,10 +1,19 @@
 <% include header %>
 
+<% if(sess.email){ %>
 <div class="jumbotron">
-    <h2>Bienvenue <%= sess.firstname %></h2>
+    <h2>Bienvenue <%= sess.firstname + ' ' + sess.name%> </h2>
+
+    <a class="btn btn-primary" role="button" href="paint"> Dessiner >></a>
+    <a class="btn btn-primary" role="button" href="guess"> Voir mes dessins >></a>
+</div>
+<% } else {%>
+<div class="jumbotron">
+    <h2>Bienvenue sur le site Pictionnary en NodeJS</h2>
 
     <a class="btn btn-primary" role="button" href="login"> Connectez-vous >></a>
     <a class="btn btn-primary" role="button" href="register"> Inscrivez-vous >></a>
 </div>
+<% }%>
 
 <% include footer %>

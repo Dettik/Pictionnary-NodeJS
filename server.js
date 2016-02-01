@@ -25,12 +25,7 @@ logger.info('server start');
 
 app.get('/', function(req, res){
     sess = req.session;
-    if(sess.email){
-        res.redirect('/main');
-    }
-    else{
-        res.redirect('/login');
-    }
+    res.redirect('/main');
 });
 
 app.get('/header', function(req, res){
@@ -44,7 +39,7 @@ app.get('/login', function(req, res){
         res.redirect('/main');
     }
     else {
-        res.render('login', {errors: []});
+        res.render('login', {errors: [], sess: sess});
     }
 });
 
@@ -60,7 +55,7 @@ app.post('/login', function(req, res) {
         var errors = [];
 
         if (errors.length != 0) {
-            res.render('login', {errors: errors});
+            res.render('login', {errors: errors, sess: sess});
         }
         else {
             var data = {email: email, password: password};
@@ -68,10 +63,10 @@ app.post('/login', function(req, res) {
             database.login(req, res, data, function (rows) {
                 if (rows.length == 0) {
                     errors.push('Email ou mot de passe incorrect !');
-                    res.render('login', {errors: errors});
+                    res.render('login', {errors: errors, sess: sess});
                 }
                 else {
-                    sess.id = rows[0].id;
+                    sess.id_user = rows[0].id_user;
                     sess.email = rows[0].email;
                     sess.name = rows[0].nom;
                     sess.firstname = rows[0].prenom;
@@ -96,7 +91,7 @@ app.get('/register', function(req, res){
         res.redirect('/main');
     }
     else {
-        res.render('register', {errors: []});
+        res.render('register', {errors: [],sess : sess});
     }
 });
 
@@ -122,7 +117,7 @@ app.post('/register', function(req, res) {
         var errors = [];
 
         if (errors.length != 0) {
-            res.render('login', {errors: errors});
+            res.render('login', {errors: errors, sess: sess});
         }
         else {
             var data = {
@@ -143,7 +138,7 @@ app.post('/register', function(req, res) {
             database.verifyEmail(req, res, data, function (rows){
                 if (rows.length != 0) {
                     errors.push('Email déjà existant !');
-                    res.render('register', {errors: errors});
+                    res.render('register', {errors: errors, sess: sess});
                 }
                 else {
                     database.register(req, res, data, function (rows) {
@@ -157,17 +152,53 @@ app.post('/register', function(req, res) {
 
 app.get('/main', function(req, res){
     sess=req.session;
-    if(sess.email){
-        res.render('main',{sess : sess});
-    }
-    else {
-        res.redirect('/login');
-    }
+    res.render('main',{sess : sess});
 });
 
 app.get('/paint', function(req, res){
     sess=req.session;
-    res.render('paint');
+    if(sess.email){
+        res.render('paint',{sess : sess});
+    }
+    else {
+        res.redirect('/main');
+    }
+});
+
+app.post('/paint', function(req, res) {
+    sess = req.session;
+    if(!sess.email){
+        res.redirect('/main');
+    }
+    else {
+        var id_user = sess.id_user;
+        var dessin = req.body.picture;
+        var commands = req.body.drawingCommands;
+        var name = req.body.picturename;
+
+        var data = {
+            id_user: id_user,
+            dessin: dessin,
+            commands: commands,
+            name: name
+        };
+
+        database.insertPaint(req, res, data, function (rows) {
+            res.redirect('/main');
+        });
+
+        logger.info(dessin);
+    }
+});
+
+app.get('/guess', function(req, res){
+    sess=req.session;
+    if(sess.email){
+        res.render('guess',{sess : sess});
+    }
+    else {
+        res.redirect('/login');
+    }
 });
 
 app.get('/logout',function(req,res){

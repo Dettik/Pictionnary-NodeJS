@@ -36,7 +36,6 @@ exports.login=function (req,res,data, callback) {
 };
 
 exports.register=function (req,res,data, callback) {
-    logger.info(data);
     connection.query('INSERT INTO users (email, password, nom, prenom, tel, website, sexe, birthdate, ville, taille, couleur, profilepic) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                     [data.email,
                      data.password,
@@ -58,5 +57,21 @@ exports.register=function (req,res,data, callback) {
         else
             logger.error(err);
 
+    });
+};
+
+exports.insertPaint=function (req,res,data, callback) {
+    connection.query('INSERT INTO drawings (id_user, commands, drawing, name) VALUES (?, ?, ?, ?)',
+        [data.id_user,
+            data.commands,
+            data.dessin,
+            data.name
+        ], function (err, rows, fields) {
+            if (!err)
+            {
+                callback(rows);
+            }
+            else
+                logger.error(err);
     });
 };
