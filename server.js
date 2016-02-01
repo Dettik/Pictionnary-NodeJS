@@ -77,7 +77,13 @@ app.post('/login', function(req, res) {
                     sess.town = rows[0].ville;
                     sess.size = rows[0].taille;
                     sess.color = rows[0].couleur;
-                    sess.profilepic = rows[0].profilepic;
+                    str = "";
+                    for(i = 0; i < rows[0].profilepic.length; i++)
+                        str += String.fromCharCode( rows[0].profilepic[i] );
+
+                    sess.profilepic = str;
+
+                    logger.info(str);
                     res.redirect('/main');
                 }
             });
@@ -152,7 +158,15 @@ app.post('/register', function(req, res) {
 
 app.get('/main', function(req, res){
     sess=req.session;
-    res.render('main',{sess : sess});
+    var id_user = sess.id_user;
+
+    var data = {
+        id_user: id_user
+    };
+
+    database.getPaint(req, res, data, function (rows) {
+        res.render('main',{sess: sess, rows: rows});
+    });
 });
 
 app.get('/paint', function(req, res){
@@ -186,18 +200,35 @@ app.post('/paint', function(req, res) {
         database.insertPaint(req, res, data, function (rows) {
             res.redirect('/main');
         });
-
-        logger.info(dessin);
     }
 });
 
 app.get('/guess', function(req, res){
     sess=req.session;
     if(sess.email){
-        res.render('guess',{sess : sess});
+        var id_user = sess.id_user;
+        var data = {id_user: id_user};
+        database.getPaint(req, res, data, function (rows) {
+            res.render('guess',{sess : sess});
+        });
     }
     else {
-        res.redirect('/login');
+        res.redirect('/main');
+    }
+});
+
+app.get('/guess/:id_draw', function(req, res){
+    sess=req.session;
+    if(sess.email){
+        var id_user = sess.id_user;
+        var id_draw = req.params.id_draw;
+        var data = {id_user: id_user, id_draw: id_draw};
+        database.guess(req, res, data, function (rows) {
+            res.render('guess',{sess : sess, rows: rows});
+        });
+    }
+    else {
+        res.redirect('/main');
     }
 });
 

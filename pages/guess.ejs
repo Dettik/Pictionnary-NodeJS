@@ -1,0 +1,57 @@
+<% include header %>
+
+<div class="jumbotron" style="height: 500px;">
+    <a class="btn btn-primary" role="button" href="../main"> << Retour</a>
+    <div class="col-xs-12 text-center" >
+        <canvas width="350" height="350" id="canvas" style="border: 1px solid grey;background-color: white"></canvas>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var size, color;
+    var commands = <%-rows[0].commands %>;
+
+    window.onload = function() {
+        var canvas    = document.getElementById('canvas');
+        canvas.width  = 350;
+        canvas.height = 350;
+        var context   = canvas.getContext('2d');
+
+        var draw = function(c) {
+            context.beginPath();
+            context.fillStyle = c.color;
+            context.arc(c.x, c.y, c.size, 0, 2 * Math.PI);
+            context.fill();
+            context.closePath();
+        };
+
+        var clear = function() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        };
+
+        var i = 0;
+        var iterate = function() {
+            if (i >= commands.length) { return; }
+
+            var c = commands[i];
+
+            switch (c.command) {
+                case "draw":
+                    draw(c);
+                    break;
+                case "clear":
+                    clear();
+                    break;
+                default:
+                    console.error("cette commande n'existe pas "+ c.command);
+            }
+
+            i++;
+            setTimeout(iterate,20);
+        };
+
+        iterate();
+    };
+</script>
+
+<% include footer %>

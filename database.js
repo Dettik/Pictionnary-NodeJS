@@ -75,3 +75,27 @@ exports.insertPaint=function (req,res,data, callback) {
                 logger.error(err);
     });
 };
+
+exports.getPaint=function (req,res,data, callback) {
+    connection.query('SELECT * from drawings where id_user=?', [data.id_user], function (err, rows, fields) {
+        if (!err)
+        {
+            callback(rows);
+        }
+        else
+            logger.error(err);
+
+    });
+};
+
+exports.guess=function (req,res,data, callback) {
+    connection.query('SELECT * from drawings where id_draw=? and id_user=?', [data.id_draw, data.id_user], function (err, rows, fields) {
+        if (!err)
+        {
+            callback(rows);
+        }
+        else
+            logger.error(err);
+
+    });
+};
